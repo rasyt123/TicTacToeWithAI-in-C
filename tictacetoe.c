@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include <time.h>
 int gameboard(char board[3][3], int whoseturn);
 bool edges(int row, int column, char board[3][3]);
 bool corners(int moverow, int movecolumn, char board[3][3]);
@@ -15,7 +16,6 @@ int easyai(char board[3][3], int whoseturn);
 bool hardai(char board[3][3]);
 int moverow;
 int movecolumn;
-
 int main()
 {
     char board[3][3] = {{'1', '2', '3'}, {'4', '5', '6'}, {'7', '8', '9'}};
@@ -376,6 +376,7 @@ bool hardai(char board[3][3])
     numberofcorners = 0;
     numberofedges = 0;
     bool winner;
+    srand(time(NULL));
     for (rows = 0; rows < 3; rows++) {
         for (columns = 0; columns < 3; columns++) {
                 possibleMoves[rows][columns] = board[rows][columns];
