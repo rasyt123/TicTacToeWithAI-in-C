@@ -2,6 +2,8 @@
 #include <stdbool.h>
 #include <stdlib.h>
 int gameboard(char board[3][3], int whoseturn);
+bool edges(int row, int column, char board[3][3]);
+bool corners(int moverow, int movecolumn, char board[3][3]);
 int hardaigameboard(char board[3][3], int whoseturn);
 bool determineaiwinner(char board[3][3], int currentplayer);
 bool diagonalwin(char board[3][3], int currentplayer);
@@ -436,15 +438,16 @@ bool hardai(char board[3][3])
         do {
             moverow = rand() % 3;
             movecolumn = rand() % 3;
-        } while (((moverow != 0 && moverow != 2) || (movecolumn != 0 && movecolumn != 2)) && (possibleMoves[moverow][movecolumn] == 'O' || possibleMoves[moverow][movecolumn] == 'X'));
+        } while (corners(moverow, movecolumn, board) == true);
         board[moverow][movecolumn] = 'O';
         return true;
     }
 
-    if (possibleMoves[1][1] != 'O' || possibleMoves[1][1] != 'X') {
+  if (possibleMoves[1][1] != 'O' || possibleMoves[1][1] != 'X') {
        board[1][1] = 'O';
        return true;
     }
+  
 
     for (rows = 0; rows < 3; rows++) {
         for (columns = 0; columns < 3; columns++) {
@@ -456,11 +459,10 @@ bool hardai(char board[3][3])
         }
     }
     if (numberofedges > 0) {
-        printf("Hello word");
         do {
             moverow = rand() % 3;
             movecolumn = rand() % 3;
-        } while (((moverow != 0) && (movecolumn != 1)) && ((moverow != 1) && (movecolumn != 0)) && ((moverow != 1) && (movecolumn != 2)) && ((moverow != 2) && (movecolumn != 1)) && (possibleMoves[moverow][movecolumn] == 'O' || possibleMoves[moverow][movecolumn] == 'X'));
+        } while (edges(moverow, movecolumn, board) == true);
         board[moverow][movecolumn] = 'O';                               
         return true;
     }
@@ -468,3 +470,51 @@ bool hardai(char board[3][3])
     return false;
 }
 
+bool corners(int row, int column, char board[3][3]) 
+{
+  if (board[row][column] == 'O' || board[row][column] == 'X') {
+    return true;
+  }
+  else {
+    if (row == 0 && column == 0) {
+    return false;
+    }
+    else if (row == 0 && column == 2) {
+      return false;
+    }
+    else if (row == 2 && column == 0) {
+      return false; 
+    }
+    else if (row == 2 && column == 2) {
+      return false;
+    }
+    else {
+      return true;
+    }
+  }  
+}
+
+bool edges(int row, int column, char board[3][3])
+{
+  if (board[row][column] == 'O' || board[row][column] == 'X') {
+        return true;
+    }
+  else {
+    if (row == 0 && column == 1) {
+        return false;
+    }
+    else if (row == 1 && column == 0) {
+      return false;
+    }
+    else if (row == 1 && column == 2) {
+      return false; 
+    }
+    else if (row == 2 && column == 1) {
+      return false;
+    }
+    else {
+      return true;
+    }
+  } 
+
+}
