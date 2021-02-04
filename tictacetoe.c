@@ -31,7 +31,7 @@ int main()
     printf("- - - - - - \n");
     printf(" %c | %c | %c\n", board[2][0], board[2][1], board[2][2]);
     putchar('\n');
-    printf("You have three choices for opponents. C for easy ai, H for hard ai, or P for Player.");
+    printf("You have three choices for opponents. C for easy ai, H for hard ai, or P for Player: ");
     scanf(" %c", &playerchoice);
     if (playerchoice == 'c' || playerchoice == 'C') {
         computer = true;
@@ -204,8 +204,10 @@ int hardaigameboard(char board[3][3], int whoseturn)
     correctlymarked = true;
     if (whoseturn == 1) {
         while (!spaceoccupied && correctlymarked == true) {
+            putchar('\n');
             printf("Player 1, please enter the number of the square where you want to place your X: ");
             scanf(" %c", &numberyouwant);
+            putchar('\n');
             for (rows = 0; rows < 3;rows++) {
                 for (columns = 0; columns < 3;columns++) {
                     if (board[rows][columns] == numberyouwant) {
@@ -226,11 +228,14 @@ int hardaigameboard(char board[3][3], int whoseturn)
             printf(" %c | %c | %c\n", board[1][0], board[1][1], board[1][2]);
             printf("- - - - - - \n");
             printf(" %c | %c | %c\n", board[2][0], board[2][1], board[2][2]);
+            putchar('\n');
         }
     }
     else if (whoseturn == 2) {
         while (!spaceoccupied && correctlymarked == true) {
+            putchar('\n');
             printf("The computer has made his move.");
+            putchar('\n');
             if (hardai(board) == true) {
                 correctlymarked = false;
                 putchar('\n');
@@ -239,6 +244,7 @@ int hardaigameboard(char board[3][3], int whoseturn)
                 printf(" %c | %c | %c\n", board[1][0], board[1][1], board[1][2]);
                 printf("- - - - - - \n");
                 printf(" %c | %c | %c\n", board[2][0], board[2][1], board[2][2]);
+                putchar('\n');
             }
         }
 
