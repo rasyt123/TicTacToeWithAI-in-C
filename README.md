@@ -1,7 +1,7 @@
 # TicTacToeWithAI-in-C
 
 I created a Tic Tac Toe game in which the user can decide to play against another player or the computer. I created an easy ai, medium ai, and hard ai to distinguish the levels
-of playing strength the computer are.
+of strength the computer can play at.
 
 1. Easy Ai - The computer randomly generates a move on any open board space and selects it. I used srand() and rand to produce this random effect and generated rows and columns
 with the modulo function.
