@@ -2,6 +2,14 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <time.h>
+#include <math.h>
+double minimax(char board[3][3], int depth, bool isMax);
+double aiwinchecker(char board[3][3]);
+int anymovesleft(char board[3][3]);
+int evaluate(char board[3][3]);
+void findBestMove(char board[3][3]);
+
+int impossibleaigameboard(char board[3][3], int whoseturn);
 int gameboard(char board[3][3], int whoseturn);
 bool edges(int row, int column, char board[3][3]);
 bool corners(int moverow, int movecolumn, char board[3][3]);
@@ -14,8 +22,10 @@ bool horizontalwin(char board[3][3], int currentplayer);
 bool tie(char board[3][3]);
 int easyai(char board[3][3], int whoseturn);
 bool hardai(char board[3][3]);
+int bestmoverow, bestmovecolumn;
 int moverow;
 int movecolumn;
+char player = 'X', ai = 'O';
 int main()
 {
     char board[3][3] = {{'1', '2', '3'}, {'4', '5', '6'}, {'7', '8', '9'}};
@@ -31,7 +41,8 @@ int main()
     printf("- - - - - - \n");
     printf(" %c | %c | %c\n", board[2][0], board[2][1], board[2][2]);
     putchar('\n');
-    printf("You have three choices for opponents. C for easy ai, H for hard ai, or P for Player: ");
+    
+    printf("You have three choices for opponents. C for easy ai, M for medium ai, H for hard ai, or P for Player: ");
     scanf(" %c", &playerchoice);
     if (playerchoice == 'c' || playerchoice == 'C') {
         computer = true;
@@ -40,11 +51,18 @@ int main()
             playerturn = easyai(board, playerturn);
         }
     }
-    else if (playerchoice == 'H' || playerchoice == 'h') {
+    else if (playerchoice == 'M' || playerchoice == 'm') {
         computer = true;
         playerturn = hardaigameboard(board, 1);
         while(!determinewinner(board, playerturn, computer)) {
             playerturn = hardaigameboard(board, playerturn);
+        }
+    }
+    else if (playerchoice == 'H' || playerchoice == 'h') {
+        computer = true;
+        playerturn = impossibleaigameboard(board, 1);
+        while (!determinewinner(board, playerturn, computer)) {
+            playerturn = impossibleaigameboard(board, playerturn);
         }
     }
     else if (playerchoice == 'p' || playerchoice == 'P') {
@@ -450,7 +468,7 @@ bool hardai(char board[3][3])
         return true;
     }
 
-  if (possibleMoves[1][1] != 'O' || possibleMoves[1][1] != 'X') {
+  if (possibleMoves[1][1] != 'O' && possibleMoves[1][1] != 'X') {
        board[1][1] = 'O';
        return true;
     }
@@ -522,6 +540,194 @@ bool edges(int row, int column, char board[3][3])
     else {
       return true;
     }
-  } 
+  }
+}
+
+double aiwinchecker(char board[3][3])
+{
+    int rows, columns;
+    columns = 0;
+    for (rows = 0; rows <= 2; rows++) {
+        if (board[rows][columns] == board[rows][columns + 1] && board[rows][columns + 2] == board[rows][columns + 1]) {
+            if (board[rows][columns] == ai) {
+                return 10;
+            } 
+            else if (board[rows][columns] == player) {
+                return -10;
+            }
+        }
+    }
+
+    for (columns = 0; columns < 3; columns++) {
+        if (board[0][columns] == board[1][columns] && board[0][columns] == board[2][columns]) {
+            if (board[0][columns] == ai) {
+                return 10;
+            }
+            else if (board[0][columns] == player) {
+                return -10;
+            }
+        }
+    }
+
+    if (board[0][0] == board[1][1] && board[1][1] == board[2][2]) {
+        if (board[0][0] == ai) {
+            return 10;
+        }
+        else if (board[0][0] == player) {
+            return -10;
+        }
+    }
+    else if (board[2][0] == board[1][1] && board[1][1] == board[0][2]) {
+       if (board[2][0] == ai) {
+           return 10;
+       }
+       else if (board[2][0] == player) {
+           return -10;
+       }
+    }
+    return 0;
+}
+
+double minimax(char board[3][3], int depth, bool isMax)
+{
+    double score = aiwinchecker(board);
+    char oldmove;
+
+    if (score == 10.0) {
+        return score;
+    }
+    if (score == -10.0) {
+        return score;
+    }
+    if (anymovesleft(board) == false) {
+        return 0;
+    }
+    if (isMax)
+    {
+        double best = -1000;
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (board[i][j] != 'O' && board[i][j] != 'X') {
+                    oldmove = board[i][j];
+                    board[i][j] = ai;
+                    best = fmax(best, minimax(board, depth + 1, !isMax));
+                    board[i][j] = oldmove;
+                }
+            }
+        }
+        return best;
+    }
+    else 
+    {
+        double best = 1000;
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (board[i][j] != 'O' && board[i][j] != 'X') {
+                    oldmove = board[i][j];
+                    board[i][j] = player;
+                    best = fmin(best, minimax(board, depth + 1, !isMax));
+                    board[i][j] = oldmove;
+                }
+            }
+        }
+        return best;
+    }
 
 }
+
+int anymovesleft(char board[3][3])
+{
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            if (board[i][j] == '1' || board[i][j] == '2' || board[i][j] == '3' || board[i][j] == '4' || board[i][j] == '5' || board[i][j] == '6' || board[i][j] == '7' || board[i][j] == '8' || board[i][j] == '9') {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+void findBestMove(char board[3][3])
+{
+    char oldmove;
+    double bestval = -1000;
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            if (board[i][j] != 'O' && board[i][j] != 'X') {
+                oldmove = board[i][j];
+                board[i][j] = ai;
+                int moveVal = minimax(board, 0, false);
+                board[i][j] = oldmove;
+
+                if (moveVal > bestval) 
+                {
+                    bestmoverow = i;
+                    bestmovecolumn = j;
+                    bestval = moveVal;
+                }
+            }
+        }
+    }
+}
+
+
+int impossibleaigameboard(char board[3][3], int whoseturn)
+{
+    int rows, columns, randomrow, randomcolumn, found;
+    char numberyouwant;
+    bool spaceoccupied, correctlymarked;
+    spaceoccupied = false;
+    correctlymarked = true;
+    if (whoseturn == 1) {
+        while (!spaceoccupied && correctlymarked == true) {
+            putchar('\n');
+            printf("Player 1, please enter the number of the square where you want to place your X: ");
+            scanf(" %c", &numberyouwant);
+            putchar('\n');
+            for (rows = 0; rows < 3;rows++) {
+                for (columns = 0; columns < 3;columns++) {
+                    if (board[rows][columns] == numberyouwant) {
+                        if (board[rows][columns] == 'X' || board[rows][columns] == 'O') {
+                            spaceoccupied = true;
+                            printf("The space is occupied, please try again.");
+                        }
+                        else {
+                            board[rows][columns] = 'X';
+                            correctlymarked = false;
+                        }
+                    }
+                }
+            }
+            putchar('\n');
+            printf(" %c | %c | %c\n", board[0][0], board[0][1], board[0][2]);
+            printf("- - - - - - \n");
+            printf(" %c | %c | %c\n", board[1][0], board[1][1], board[1][2]);
+            printf("- - - - - - \n");
+            printf(" %c | %c | %c\n", board[2][0], board[2][1], board[2][2]);
+            putchar('\n');
+        }
+    }
+    else if (whoseturn == 2) {
+            findBestMove(board);
+            board[bestmoverow][bestmovecolumn] = 'O';
+            putchar('\n');
+            printf("The computer has made his move.");
+            putchar('\n');
+
+            putchar('\n');
+            printf(" %c | %c | %c\n", board[0][0], board[0][1], board[0][2]);
+            printf("- - - - - - \n");
+            printf(" %c | %c | %c\n", board[1][0], board[1][1], board[1][2]);
+            printf("- - - - - - \n");
+            printf(" %c | %c | %c\n", board[2][0], board[2][1], board[2][2]);
+            putchar('\n');
+        }
+    if (whoseturn == 1) {
+        whoseturn = whoseturn + 1;
+    }
+    else if (whoseturn == 2) {
+        whoseturn = whoseturn - 1;
+    }
+    return whoseturn;
+}
+
