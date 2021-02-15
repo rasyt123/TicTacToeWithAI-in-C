@@ -1,5 +1,5 @@
 # TicTacToeWithAI-in-C
-My name is Justin and I'm a CS freshman at UC Davis. I've been coding for a few months, and I'm still a beginner but this is my first programming project :), so excuse me for the messy code.
+My name is Justin and I'm a CS freshman at UC Davis. I've been coding for a few months, and I'm still a beginner but this is my first programming project :), so excuse me for the messy code. I'll make it spicier by adding pointers/dynamic memory allocation later.
 
 I created a Tic Tac Toe game in which the user can decide to play against another player or the computer. I created an easy ai, medium ai, and hard ai to distinguish the levels
 of strength the computer can play at.
