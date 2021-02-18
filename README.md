@@ -14,4 +14,4 @@ in the center. If the center is occupied, the computer will choose a random edge
 3. Hard AI - Implemented using MiniMax Algorithim in which most of the possible combinations of 'O's or 'X's are recursively called into several boards and are given scores of
 10, -10, or 0 to find the best move. When all the combinations are rated with minmax the maximum of the scores is the best move. It is impossible to beat. 
 
-![alt text](https://media.geeksforgeeks.org/wp-content/uploads/TIC_TAC.jpg)
+   ![alt text](https://media.geeksforgeeks.org/wp-content/uploads/TIC_TAC.jpg)
