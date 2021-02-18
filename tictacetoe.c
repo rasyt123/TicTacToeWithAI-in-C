@@ -32,9 +32,11 @@ char** boardcreation()
 {
     char boardslot = '1';
     char** board = (char**) malloc(3 * sizeof(char*));
-    for (int row = 0; row < 3; ++row) {
+    for (int row = 0; row < 3; ++row) 
+    {
         board[row] = (char*) malloc(3 * sizeof(char));
-        for (int col = 0; col < 3; ++col) {
+        for (int col = 0; col < 3; ++col) 
+        {
             board[row][col] = boardslot;
             boardslot++;
         }
